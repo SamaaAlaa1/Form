@@ -11,11 +11,67 @@ const Form = () => {
         university_level: '',
         course: ''
     })
+    const universities = ["Cairo", "Ain Shams", "Helwan", "Other"]
+    const levels = ["1", "2", "3", "4"]
+    const courses = ["C++", "OOP", "Flutter", "Ds & Algorithms", "UI/UX"]
+
+    const validate = () => {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(data.email)) {
+            Swal.fire({
+                icon: 'error', title: 'Invalid Email', text: 'Please enter a valid email address.', confirmButtonColor: '#700601',
+                confirmButtonText: 'OK'
+            });
+            return false;
+        }
+
+        const phoneRegex = /^[0-9]{10,}$/;
+        if (!phoneRegex.test(data.phone)) {
+            Swal.fire({
+                icon: 'error', title: 'Invalid Phone', text: 'Phone number must be at least 10 digits.', confirmButtonColor: '#700601',
+                confirmButtonText: 'OK'
+            });
+            return false;
+        }
+
+        if (!universities.includes(data.university)) {
+            Swal.fire({
+                icon: 'error', title: 'Invalid University', text: 'Please select a valid university.', confirmButtonColor: '#700601',
+                confirmButtonText: 'OK'
+            });
+            return false;
+        }
+
+        if (!levels.includes(data.university_level)) {
+            Swal.fire({
+                icon: 'error', title: 'Invalid University Level', text: 'Please select a valid university level.', confirmButtonColor: '#700601',
+                confirmButtonText: 'OK'
+            });
+            return false;
+        }
+
+        if (!courses.includes(data.course)) {
+            Swal.fire({
+                icon: 'error', title: 'Invalid Course', text: 'Please select a valid course.', confirmButtonColor: '#700601',
+                confirmButtonText: 'OK'
+            });
+            return false;
+        }
+
+        return true;
+    }
+
+
     const handleChange = (e) => {
         setData({ ...data, [e.target.name]: e.target.value });
     };
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        if (!validate()) {
+            return;
+        }
+
         try {
             const response = await axios.post('https://fake-form.onrender.com/api/students/addStudent', data, {
                 headers: { 'Content-Type': 'application/json' }
@@ -27,6 +83,14 @@ const Form = () => {
                 text: 'Form submitted successfully!',
                 confirmButtonColor: '#d33',
                 confirmButtonText: 'OK'
+            });
+            setData({
+                name: '',
+                email: '',
+                phone: '',
+                university: '',
+                university_level: '',
+                course: ''
             });
         }
         catch (err) {
